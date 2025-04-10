@@ -18,7 +18,7 @@ class UDPServer:
 
     @staticmethod
     def get_start_arguments(message):
-        args_input = re.fullmatch(r'start:(\d+):(\d{1})#', message)
+        args_input = re.fullmatch(r"start:(\d+):(\d{1})#", message)
         iteration = args_input.group(1)
         object_is_found = args_input.group(2)
         return iteration, object_is_found
