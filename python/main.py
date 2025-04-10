@@ -17,7 +17,11 @@ def is_start_msg(message: str) -> bool:
 
 
 def is_sonar_data(message: str) -> bool:
-    return bool(re.fullmatch(r"(\d+)", message))
+    data = re.fullmatch(r"(\d+)", message)
+    if data is not None:
+        if int(data.group(1)) > 0:
+            return True
+    return False
 
 
 # Конфигурация сети
@@ -27,6 +31,9 @@ MAIN_PORT = 3163
 
 LAMP_IP = "192.168.42.129"
 LAMP_PORT = 8000
+
+SONAR_IP = "192.168.42.128"
+SONAR_PORT = 8888
 
 # айпи общего сервера разрабов
 LOCAL_IP = "192.168.42.120"
@@ -68,6 +75,7 @@ while True:
             print(f"{iteration=} {obj_is_found=}")
             signal_lamp.command_received()
             signal_lamp.off()
+            server.send_message(str.encode("get_sonar_data", "utf-8"), SONAR_IP, SONAR_PORT)
 
             while True:
                 try:
@@ -80,35 +88,29 @@ while True:
                         print("Сонар: ", sonar_data)
 
                         if sonar_data <= MAX_DIST_TO_OBJECT:
-                            sonar_approve += 1
-                        sonar_counts += 1
+                            OBJECT_DETECTED = True
 
-                        if sonar_counts >= MEASUREMENT_COUNT:
-                            # Подсчитываем количество значений < 10
-                            if sonar_counts - sonar_approve <= MAX_FAIL_SONAR:
-                                OBJECT_DETECTED = True
-                            # Определяем наличие объекта по большинству
-                            if OBJECT_DETECTED:
-                                signal_lamp.defect()
-                                server.send_final_mesage(
-                                    iteration,
-                                    3,
-                                    2,
-                                    SERVER_CONTROL_IP,
-                                    MAIN_PORT,
-                                )
-                                break
+                        if OBJECT_DETECTED:
+                            signal_lamp.defect()
+                            server.send_final_mesage(
+                                iteration,
+                                3,
+                                2,
+                                SERVER_CONTROL_IP,
+                                MAIN_PORT,
+                            )
+                            break
 
-                            else:
-                                signal_lamp.not_object()
-                                server.send_final_mesage(
-                                    iteration,
-                                    3,
-                                    1,
-                                    SERVER_CONTROL_IP,
-                                    MAIN_PORT,
-                                )
-                                break
+                        else:
+                            signal_lamp.not_object()
+                            server.send_final_mesage(
+                                iteration,
+                                3,
+                                1,
+                                SERVER_CONTROL_IP,
+                                MAIN_PORT,
+                            )
+                            break
 
                 except KeyboardInterrupt:
                     break
