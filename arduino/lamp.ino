@@ -26,7 +26,10 @@ EthernetUDP Udp;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);     
-  Ethernet.init(10);   
+  Ethernet.init(10);
+  for(uint8_t i = 0; i < 4; i++){
+    mac[i] = ip[i];
+  }
   Ethernet.begin(mac, ip); 
   Udp.begin(localPort);
 
@@ -62,9 +65,6 @@ void changeLed(int state){
   switch (state){
     case 0: // orange off - command recieved
       digitalWrite(orange_led, LOW);
-      digitalWrite(blue_led, LOW);
-      digitalWrite(red_led, LOW);
-      digitalWrite(green_led, LOW);
     case 1: // брак - красный
       digitalWrite(red_led, HIGH);
       digitalWrite(orange_led, LOW);
@@ -73,9 +73,6 @@ void changeLed(int state){
       break;
     case 2: // orange - wait command
       digitalWrite(orange_led, HIGH);
-      digitalWrite(red_led, LOW);
-      digitalWrite(green_led, LOW);
-      digitalWrite(blue_led, LOW);
       break;
     case 3: // hrupkaya - green 
       digitalWrite(green_led, HIGH);
@@ -95,6 +92,12 @@ void changeLed(int state){
       digitalWrite(orange_led, LOW);
       digitalWrite(red_led, LOW);
       break;
-    
+  
+  case 6: // all off
+      digitalWrite(blue_led, LOW);
+      digitalWrite(orange_led, LOW);
+      digitalWrite(green_led, LOW);
+      digitalWrite(red_led, LOW);
+      break;
   }
 }
