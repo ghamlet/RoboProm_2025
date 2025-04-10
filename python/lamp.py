@@ -1,5 +1,4 @@
-import main
-
+import socket
 
 """
 1 - красный (брак)
@@ -14,18 +13,28 @@ import main
 class Lamp:
     def __init__(self, ip: str, port: int, state: int = 2):
         self.state = state
-        self.ip = ip
-        self.port = port
+        self.lamp_ip = ip
+        self.lamp_port = port
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+
 
     def set_state(self, state: int = 0):
         self.state = state
-        main.server.send_message(
-            str.encode(
-                f"id:1:state:{self.state}", "utf-8",
-            ),
-            self.ip,
-            self.port,
-        )
+        bytes_to_send = str.encode(f"id:1:state:{self.state}")
+
+        self.socket.sendto(bytes_to_send, (self.lamp_ip, self.lamp_port))
+        
+        
+        # self.state = state
+        # main.server.send_message(
+        #     str.encode(
+        #         f"id:1:state:{self.state}", "utf-8",
+        #     ),
+        #     self.ip,
+        #     self.port,
+        # )
+
 
     def waiting_commands(self):
         self.set_state(2)
