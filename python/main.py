@@ -2,6 +2,7 @@ from lamp import Lamp
 from nano_pi import NanoPi
 
 import re
+import time
 
 
 def get_start_arguments(message):
@@ -35,7 +36,7 @@ LOCAL_PORT = 8888
 # Для нормального считывания данных с сонара
 MEASUREMENT_COUNT = 10  # количество замеров от сонара для анализа
 DETECTION_THRESHOLD = 7  # порог для определения большинства (если >= 3 из 5  - объект есть)
-MAX_DIST_TO_OBJECT = 14  # максимальная длина до детали
+MAX_DIST_TO_OBJECT = 15  # максимальная длина до детали
 
 server = NanoPi(MAIN_IP, MAIN_PORT, LOCAL_IP, LOCAL_PORT)
 server.start_global()
@@ -52,8 +53,8 @@ print("Ожидание стартового сообщения...")
 while True:
     try:
         OBJECT_DETECTED = None
-        sonar_readings = []
-        current_measurements = []
+        sonar_counts = 0
+        sonar_approve = 0
         signal_lamp.waiting_commands()
 
         data, addr = server.socket_serv.recvfrom(1024)
@@ -77,7 +78,7 @@ while True:
                         sonar_data = int(message)
                         print("Сонар: ", sonar_data)
 
-                        current_measurements.append(sonar_data)
+                        if sonar_data <= MAX_DIST_TO_OBJECT
 
                         if len(current_measurements) >= MEASUREMENT_COUNT:
                             # Подсчитываем количество значений < 10
@@ -90,7 +91,15 @@ while True:
                             # Определяем наличие объекта по большинству
                             if low_readings >= DETECTION_THRESHOLD:
                                 OBJECT_DETECTED = True
-                                # ALL CAMERA LOGIС
+                                signal_lamp.defect()
+                                server.send_final_mesage(
+                                    iteration,
+                                    3,
+                                    2,
+                                    SERVER_CONTROL_IP,
+                                    MAIN_PORT,
+                                )
+                                #break
 
                             else:
                                 OBJECT_DETECTED = False
@@ -102,7 +111,7 @@ while True:
                                     SERVER_CONTROL_IP,
                                     MAIN_PORT,
                                 )
-                                break
+                                #break
 
                 except KeyboardInterrupt:
                     break
