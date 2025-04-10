@@ -33,20 +33,9 @@ LOCAL_PORT = 8888
 
 
 # Для нормального считывания данных с сонара
-object_detected = False
-sonar_readings = []
-current_measurements = []
 MEASUREMENT_COUNT = 10  # количество замеров от сонара для анализа
-DETECTION_THRESHOLD = (
-    6  # порог для определения большинства (если >= 3 из 5  - объект есть)
-)
+DETECTION_THRESHOLD = 7  # порог для определения большинства (если >= 3 из 5  - объект есть)
 MAX_DIST_TO_OBJECT = 14  # максимальная длина до детали
-
-
-OBJECT_DETECTED = (
-    None  # переменная для определения наличия обьекта на конвейере
-)
-
 
 server = NanoPi(MAIN_IP, MAIN_PORT, LOCAL_IP, LOCAL_PORT)
 server.start_global()
@@ -54,17 +43,17 @@ server.start_local()
 signal_lamp = Lamp(LAMP_IP, LAMP_PORT)
 
 
-WAS_START_MESSAGE = False  # флаг для отлова стартового сообщения
-
 signal_lamp.off()
 signal_lamp.test_lamp()
 signal_lamp.waiting_commands()
 
 print("Ожидание стартового сообщения...")
 
-# Ловим стартовое сообщение
 while True:
     try:
+        OBJECT_DETECTED = None
+        sonar_readings = []
+        current_measurements = []
         signal_lamp.waiting_commands()
 
         data, addr = server.socket_serv.recvfrom(1024)
@@ -86,7 +75,7 @@ while True:
 
                     if is_sonar_data(message):
                         sonar_data = int(message)
-                        print("СОНАР: ", sonar_data)
+                        print("Сонар: ", sonar_data)
 
                         current_measurements.append(sonar_data)
 
@@ -101,6 +90,7 @@ while True:
                             # Определяем наличие объекта по большинству
                             if low_readings >= DETECTION_THRESHOLD:
                                 OBJECT_DETECTED = True
+                                # ALL CAMERA LOGIС
 
                             else:
                                 OBJECT_DETECTED = False
