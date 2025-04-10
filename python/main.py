@@ -36,6 +36,7 @@ LOCAL_PORT = 8888
 # Для нормального считывания данных с сонара
 MEASUREMENT_COUNT = 10  # количество замеров от сонара для анализа
 DETECTION_THRESHOLD = 7  # порог для определения большинства (если >= 3 из 5  - объект есть)
+MAX_FAIL_SONAR = MEASUREMENT_COUNT - DETECTION_THRESHOLD
 MAX_DIST_TO_OBJECT = 15  # максимальная длина до детали
 
 server = NanoPi(MAIN_IP, MAIN_PORT, LOCAL_IP, LOCAL_PORT)
@@ -52,7 +53,7 @@ print("Ожидание стартового сообщения...")
 
 while True:
     try:
-        OBJECT_DETECTED = None
+        OBJECT_DETECTED = False
         sonar_counts = 0
         sonar_approve = 0
         signal_lamp.waiting_commands()
@@ -78,19 +79,16 @@ while True:
                         sonar_data = int(message)
                         print("Сонар: ", sonar_data)
 
-                        if sonar_data <= MAX_DIST_TO_OBJECT
+                        if sonar_data <= MAX_DIST_TO_OBJECT:
+                            sonar_approve += 1
+                        sonar_counts += 1
 
-                        if len(current_measurements) >= MEASUREMENT_COUNT:
+                        if sonar_counts >= MEASUREMENT_COUNT:
                             # Подсчитываем количество значений < 10
-                            low_readings = sum(
-                                1
-                                for r in current_measurements
-                                if r < MAX_DIST_TO_OBJECT
-                            )
-
-                            # Определяем наличие объекта по большинству
-                            if low_readings >= DETECTION_THRESHOLD:
+                            if sonar_counts - sonar_approve <= MAX_FAIL_SONAR:
                                 OBJECT_DETECTED = True
+                            # Определяем наличие объекта по большинству
+                            if OBJECT_DETECTED:
                                 signal_lamp.defect()
                                 server.send_final_mesage(
                                     iteration,
@@ -102,7 +100,6 @@ while True:
                                 #break
 
                             else:
-                                OBJECT_DETECTED = False
                                 signal_lamp.not_object()
                                 server.send_final_mesage(
                                     iteration,
