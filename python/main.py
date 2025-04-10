@@ -64,7 +64,7 @@ while True:
         sonar_counts = 0
         sonar_approve = 0
         signal_lamp.waiting_commands()
-
+        time.sleep(1)
         data, addr = server.socket_serv.recvfrom(1024)
         message = data.decode("utf-8").strip()
         print(f"Received from {addr}: {message}")
@@ -75,6 +75,7 @@ while True:
             print(f"{iteration=} {obj_is_found=}")
             signal_lamp.command_received()
             signal_lamp.off()
+            time.sleep(1)
             server.send_message(str.encode("get_sonar_data", "utf-8"), SONAR_IP, SONAR_PORT)
 
             while True:
@@ -114,7 +115,7 @@ while True:
 
                 except KeyboardInterrupt:
                     break
-
+        time.sleep(1)
     except KeyboardInterrupt:
         print("\nServer stopped")
         server.close()
