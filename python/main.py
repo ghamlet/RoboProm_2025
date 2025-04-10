@@ -97,7 +97,7 @@ while True:
                                     SERVER_CONTROL_IP,
                                     MAIN_PORT,
                                 )
-                                #break
+                                break
 
                             else:
                                 signal_lamp.not_object()
@@ -108,7 +108,7 @@ while True:
                                     SERVER_CONTROL_IP,
                                     MAIN_PORT,
                                 )
-                                #break
+                                break
 
                 except KeyboardInterrupt:
                     break
