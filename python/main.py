@@ -42,7 +42,9 @@ LOCAL_PORT = 8888
 
 # Для нормального считывания данных с сонара
 MEASUREMENT_COUNT = 10  # количество замеров от сонара для анализа
-DETECTION_THRESHOLD = 7  # порог для определения большинства (если >= 3 из 5  - объект есть)
+DETECTION_THRESHOLD = (
+    7  # порог для определения большинства (если >= 3 из 5  - объект есть)
+)
 MAX_FAIL_SONAR = MEASUREMENT_COUNT - DETECTION_THRESHOLD
 MAX_DIST_TO_OBJECT = 15  # максимальная длина до детали
 
@@ -75,7 +77,9 @@ while True:
             print(f"{iteration=} {obj_is_found=}")
             signal_lamp.off()
             time.sleep(1)
-            server.send_message(str.encode("get_sonar_data", "utf-8"), SONAR_IP, SONAR_PORT)
+            server.send_message(
+                str.encode("get_sonar_data", "utf-8"), SONAR_IP, SONAR_PORT
+            )
 
             while True:
                 try:
