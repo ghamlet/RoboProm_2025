@@ -73,7 +73,6 @@ while True:
             print("Получено стартовое сообщение")
             iteration, obj_is_found = get_start_arguments(message)
             print(f"{iteration=} {obj_is_found=}")
-            signal_lamp.command_received()
             signal_lamp.off()
             time.sleep(1)
             server.send_message(str.encode("get_sonar_data", "utf-8"), SONAR_IP, SONAR_PORT)
