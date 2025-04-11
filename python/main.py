@@ -1,6 +1,6 @@
 from lamp import Lamp
 from nano_pi import NanoPi
-
+from camEx import *
 import re
 import time
 
@@ -94,7 +94,7 @@ while True:
                             OBJECT_DETECTED = True
 
                         if OBJECT_DETECTED:
-                            camera_detection = camera_detection()
+                            camera_detection = check_camera()
                             if camera_detection == 2:
                                 signal_lamp.defect()
                                 server.send_final_mesage(
