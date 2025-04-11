@@ -129,6 +129,7 @@ while True:
 
                         else:
                             signal_lamp.not_object()
+                            time.sleep(1)
                             server.send_final_mesage(
                                 iteration,
                                 TEAM_NUMBER,
@@ -140,7 +141,6 @@ while True:
 
                 except KeyboardInterrupt:
                     break
-        time.sleep(1)
     except KeyboardInterrupt:
         print("\nServer stopped")
         server.close()
