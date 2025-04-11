@@ -33,17 +33,17 @@ def get_start_arguments(message):
     return iteration, object_is_found
 
 
-def is_start_msg(addr: str, message: str) -> bool:
+def is_start_msg(message: str) -> bool:
     data = re.fullmatch(r"start:(\d+):(1|3)#", message)
-    if data is not None and addr == SERVER_CONTROL_IP:
+    if data is not None:
         return True
     return False
 
 
-def is_sonar_data(addr: str, message: str) -> bool:
+def is_sonar_data(message: str) -> bool:
     data = re.fullmatch(r"(\d+)", message)
     if data is not None:
-        if int(data.group(1)) > 0 and addr == SONAR_IP:
+        if int(data.group(1)) > 0:
             return True
     return False
 
@@ -70,7 +70,7 @@ while True:
         message = data.decode("utf-8").strip()
         print(f"Received from {addr}: {message}")
 
-        if is_start_msg(addr, message):
+        if is_start_msg(message):
             print("Получено стартовое сообщение")
             iteration, obj_is_found = get_start_arguments(message)
             print(f"{iteration=} {obj_is_found=}")
@@ -86,7 +86,7 @@ while True:
                     message = data.decode("utf-8").strip()
                     print(f"Received from {addr}: {message}")
 
-                    if is_sonar_data(addr, message):
+                    if is_sonar_data(message):
                         sonar_data = int(message)
                         print("Сонар: ", sonar_data)
 
