@@ -25,4 +25,7 @@
 
 
 ## Демонстрация полигона Кванториума с развернутой производственной линией в завершающей стадии соревнований
-![Видео демо](https://github.com/ghamlet/RoboProm_2025/blob/main/docs/production_line.mp4)
+
+
+https://github.com/user-attachments/assets/d7f727d7-0fba-426b-b362-9bf07f45c106
+
