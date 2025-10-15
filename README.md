@@ -25,8 +25,5 @@
 
 
 ## Демонстрация полигона Кванториума с развернутой производственной линией в завершающей стадии соревнований
-<!-- ![Видео демо](./docs/production_line.mp4) -->
-<video width="800" controls>
-  <source src="./docs/production_line.mp4" type="video/mp4">
-  Ваш браузер не поддерживает видео тег.
-</video>
+<!-- ![Видео демо]() -->
+<video src='./docs/production_line.mp4' width=180/>
